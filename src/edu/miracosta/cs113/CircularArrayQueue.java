@@ -6,12 +6,19 @@ import java.util.Queue;
 
 public class CircularArrayQueue<E> implements Queue<E>
 {
+    int initialCapacity;
+    ArrayListStack<E> stackToAddTo;
+    int currentSize;
+    E headOfQueue;
     /***************************************************************
      * Default constructor.
      ***************************************************************/
     CircularArrayQueue(int initialCapacityToSet)
     {
-
+        initialCapacity = initialCapacityToSet;
+        stackToAddTo = new ArrayListStack<E>(initialCapacity);
+        currentSize = 0;
+        headOfQueue = null;
     }
 
     /***************************************************************
@@ -23,7 +30,23 @@ public class CircularArrayQueue<E> implements Queue<E>
     @Override
     public boolean add(E e)
     {
-        return false;
+        if(initialCapacity == currentSize)
+        {
+            throw new IllegalStateException();
+        }
+        else if(currentSize  == 0)
+        {
+            headOfQueue = (E)e;
+            stackToAddTo.push(e);
+            currentSize++;
+            return true;
+        }
+        else
+        {
+            stackToAddTo.push(e);
+            currentSize++;
+            return true;
+        }
     }
 
     /***************************************************************
@@ -32,7 +55,7 @@ public class CircularArrayQueue<E> implements Queue<E>
     @Override
     public E element()
     {
-        return null;
+        return headOfQueue;
     }
     /***************************************************************
      * Inserts the specified element into this queue if it is
@@ -52,7 +75,7 @@ public class CircularArrayQueue<E> implements Queue<E>
     @Override
     public E peek()
     {
-        return null;
+        return headOfQueue;
     }
     /***************************************************************
      * Retrieves and removes the head of this queue, or returns
