@@ -7,21 +7,34 @@ import java.util.Iterator;
 
 public class ArrayListStack<E> implements StackInterface<E>
 {
-    ArrayList<E> stack;
+    private ArrayList<E> stackArray;
 
+    /***************************************************************
+     * A copy constructor that reverses order.
+     ***************************************************************/
+    ArrayListStack(ArrayListStack<E> stackToCopy)
+    {
+        stackArray = new ArrayList<E>();
+        int c = 0;
+        for(int i = stackToCopy.stackArray.size()-1; i>= 0; i--)
+        {
+            stackArray.add(stackToCopy.stackArray.get(i) );
+        }
+
+    }
     /***************************************************************
      * Default constructor.
      ***************************************************************/
     ArrayListStack()
     {
-        stack = new ArrayList<E>();
+        stackArray = new ArrayList<E>();
     }
     /***************************************************************
      * Int constructor.
      ***************************************************************/
     ArrayListStack(int initialCapacity)
     {
-        stack = new ArrayList<>(initialCapacity);
+        stackArray = new ArrayList<E>(initialCapacity);
     }
 
     /**
@@ -32,7 +45,7 @@ public class ArrayListStack<E> implements StackInterface<E>
     @Override
     public boolean empty()
     {
-        return stack.isEmpty();
+        return stackArray.isEmpty();
     }
 
     /**
@@ -43,9 +56,9 @@ public class ArrayListStack<E> implements StackInterface<E>
     @Override
     public E peek()
     {
-        if(stack.size() != 0)
+        if(!stackArray.isEmpty())
         {
-            return stack.get(0);
+            return stackArray.get(0);
         }
         else
         {
@@ -61,14 +74,14 @@ public class ArrayListStack<E> implements StackInterface<E>
     @Override
     public E pop()
     {
-        if(stack.size() == 0)
+        if(this.stackArray.size() == 0)
         {
             throw new EmptyStackException();
         }
         else
         {
-            E e = stack.get(0);
-            stack.remove(0);
+            E e = stackArray.get(0);
+            stackArray.remove(0);
             return e;
         }
     }
@@ -82,7 +95,51 @@ public class ArrayListStack<E> implements StackInterface<E>
     @Override
     public E push(E obj)
     {
-        stack.add(0,obj);
-        return stack.get(0);
+        stackArray.add(0,obj);
+        return obj;
+    }
+
+    @Override
+    public String toString()
+    {
+        String toReturn = "[ ";
+        for(int i = 0; i < stackArray.size(); i++)
+        {
+            toReturn += stackArray.get(i) + " ";
+        }
+        toReturn += "]";
+        return toReturn;
+    }
+    /***************************************************************
+     * Test arrays for equality.
+     * @return True if the same or false if different.
+     ***************************************************************/
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof ArrayListStack))
+        {
+            return false;
+        }
+        ArrayListStack c = (ArrayListStack) o;
+
+        if(stackArray.size() != (((ArrayListStack) o).stackArray.size()))
+        {
+            return false;
+        }
+        boolean isEqual = true;
+        for(int i = 0; i < stackArray.size(); i++)
+        {
+            if(!stackArray.get(0).equals(((ArrayListStack) o).stackArray.get(0)))
+            {
+                isEqual = false;
+            }
+        }
+
+        return isEqual;
     }
 }
