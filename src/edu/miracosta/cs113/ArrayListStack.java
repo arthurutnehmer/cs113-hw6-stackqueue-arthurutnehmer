@@ -103,7 +103,7 @@ public class ArrayListStack<E> implements StackInterface<E>
     public String toString()
     {
         String toReturn = "[ ";
-        for(int i = 0; i < stackArray.size(); i++)
+        for(int i = stackArray.size()-1; i >= 0; i--)
         {
             toReturn += stackArray.get(i) + " ";
         }

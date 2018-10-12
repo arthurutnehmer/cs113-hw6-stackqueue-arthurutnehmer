@@ -6,6 +6,8 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+import java.util.Iterator;
+
 /**
  * PalindromeTester : a test class for isPalindrome, a method intended to utilize stacks to evaluate if a given
  * string is a palindrome.
@@ -40,10 +42,41 @@ public class PalindromeTester {
      * @param s a string comprised of any character
      * @return returns true if a palindrome (ignoring whitespace and case sensitivity), false otherwise
      */
-    private boolean isPalindrome(String s) {
+    private boolean isPalindrome(String s)
+    {
+        String palindrome = s;
+        //Remove whitespace and the case sensitivity.
+        palindrome = palindrome.replaceAll("\\s","");
+        palindrome = palindrome.toLowerCase();
+        //create array stack.
+        ArrayListStack<Character> stackOfLetters = new ArrayListStack<Character>();
+        ArrayListStack<Character> stackOfLetters2 = new ArrayListStack<Character>();
 
-        // TODO: Implement this method body using your ArrayListStack. Be mindful of your algorithm!
-        return false;
+        boolean isApalindrone = true;
+
+        //Populates stack with a word or phrase.
+        for (int i = 0;i < palindrome.length(); i++)
+        {
+            stackOfLetters.push(palindrome.charAt(i));
+        }
+
+        //Fill second stack half way.
+        for (int i = 0; i < (palindrome.length()/2); i++)
+        {
+            stackOfLetters2.push(stackOfLetters.pop()) ;
+        }
+
+        //test stack
+        for (int i = 0;i < ((palindrome.length()/2)); i++)
+        {
+            if(stackOfLetters.pop() != (stackOfLetters2.pop()) )
+            {
+                isApalindrone = false;
+            }
+        }
+
+        return  isApalindrone;
+
 
     } // End of method isPalindrome
 

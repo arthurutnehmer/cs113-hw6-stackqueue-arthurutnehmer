@@ -4,13 +4,26 @@ public class Test
 {
     public static void main(String[]args)
     {
-        CircularArrayQueue<String> QueOfLetters = new CircularArrayQueue<String>(0);
+        ArrayListStack<String> QueOfLetters = new ArrayListStack<>(0);
+        ArrayListStack<String> QueOfLetters2 = new ArrayListStack<>(0);
+        ArrayListStack<String> QueOfLetters3;
+        QueOfLetters.push("m");
+        QueOfLetters.push("a");
+        QueOfLetters.push("d");
+        QueOfLetters.push("a");
+        QueOfLetters.push("m");
+
+        QueOfLetters3 = new ArrayListStack<>();
+
+        QueOfLetters2.push(QueOfLetters.pop());
+        QueOfLetters2.push(QueOfLetters.pop());
+        QueOfLetters2.push(QueOfLetters.pop());
 
 
-        CircularArrayQueue<String> QueOfLetters2 = new CircularArrayQueue<String>();
+        System.out.println(QueOfLetters);
 
+        System.out.println(QueOfLetters2);
 
-        System.out.println(QueOfLetters.equals(QueOfLetters2));
 
 
     }
