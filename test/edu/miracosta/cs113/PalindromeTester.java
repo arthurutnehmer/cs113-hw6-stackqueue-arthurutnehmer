@@ -44,6 +44,10 @@ public class PalindromeTester {
      */
     private boolean isPalindrome(String s)
     {
+        if(s == null)
+        {
+            throw new IllegalArgumentException();
+        }
         String palindrome = s;
         //Remove whitespace and the case sensitivity.
         palindrome = palindrome.replaceAll("\\s","");
@@ -65,7 +69,8 @@ public class PalindromeTester {
         {
             stackOfLetters2.push(stackOfLetters.pop()) ;
         }
-
+         stackOfLetters = new ArrayListStack<Character>(stackOfLetters);
+        stackOfLetters2 = new ArrayListStack<Character>(stackOfLetters2);      
         //test stack
         for (int i = 0;i < ((palindrome.length()/2)); i++)
         {
