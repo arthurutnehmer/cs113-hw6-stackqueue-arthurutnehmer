@@ -1,24 +1,23 @@
 package edu.miracosta.cs113;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Queue;
+import java.rmi.activation.ActivationGroup_Stub;
+import java.util.*;
 
 public class CircularArrayQueue<E> implements Queue<E>
 {
     private int initialCapacity;
-    private ArrayListStack<E> stackToAddTo;
-    private int currentSize;
+    private int front;
+    private int rear;
+    private int size;
+    private ArrayList<E> queToAddTo;
 
     /***************************************************************
      * Default constructor.
      ***************************************************************/
     CircularArrayQueue()
     {
-        initialCapacity = 0;
-        stackToAddTo = new ArrayListStack<E>(initialCapacity);
-        currentSize = 0;
+        initialCapacity = 20;
+        queToAddTo = new ArrayList<E>(initialCapacity);
     }
 
     /***************************************************************
@@ -28,8 +27,10 @@ public class CircularArrayQueue<E> implements Queue<E>
     CircularArrayQueue(int initialCapacityToSet)
     {
         initialCapacity = initialCapacityToSet;
-        stackToAddTo = new ArrayListStack<E>(initialCapacity);
-        currentSize = 0;
+        front = 0;
+        rear = initialCapacityToSet-1;
+        queToAddTo = new ArrayList<E>(initialCapacityToSet);
+        size = 0;
     }
 
     /***************************************************************
@@ -43,14 +44,15 @@ public class CircularArrayQueue<E> implements Queue<E>
     @Override
     public boolean add(E e)
     {
-        if(initialCapacity == currentSize)
+        if(initialCapacity == size)
         {
             throw new IllegalStateException();
         }
         else
         {
-            stackToAddTo.push(e);
-            currentSize++;
+            size++;
+            rear = (rear+1) % initialCapacity;
+            queToAddTo.add(rear, e);
             return true;
         }
     }
@@ -62,15 +64,11 @@ public class CircularArrayQueue<E> implements Queue<E>
     @Override
     public E element()
     {
-        if(!stackToAddTo.empty())
+        if(size == 0)
         {
-            ArrayListStack<E> tmpArraylist = new ArrayListStack<E>(stackToAddTo);
-            return tmpArraylist.peek();
+             throw new NoSuchElementException();
         }
-        else
-        {
-            throw new NoSuchElementException();
-        }
+        return queToAddTo.get(front);
     }
     /***************************************************************
      * Inserts the specified element into this queue if it is
@@ -80,16 +78,14 @@ public class CircularArrayQueue<E> implements Queue<E>
     @Override
     public boolean offer(E e)
     {
-        if(initialCapacity >= currentSize)
+        if(initialCapacity == size)
         {
-            stackToAddTo.push(e);
-            currentSize++;
+            reallocate();
+        }
+            size++;
+            rear = (rear+1) % initialCapacity;
+            queToAddTo.add(rear, e);
             return true;
-        }
-        else
-        {
-            return false;
-        }
     }
     /***************************************************************
      * Retrieves, but does not remove, the head of this queue,
@@ -98,16 +94,11 @@ public class CircularArrayQueue<E> implements Queue<E>
     @Override
     public E peek()
     {
-        if(!stackToAddTo.empty())
-        {
-            ArrayListStack<E> tmpArraylist = new ArrayListStack<E>(stackToAddTo);
-            return tmpArraylist.peek();
-        }
-        else if(stackToAddTo.empty())
+        if(size == 0)
         {
             return null;
         }
-        return null;
+        return queToAddTo.get(front);
     }
     /***************************************************************
      * Retrieves and removes the head of this queue, or returns
@@ -116,20 +107,14 @@ public class CircularArrayQueue<E> implements Queue<E>
     @Override
     public E poll()
     {
-        if(!stackToAddTo.empty())
-        {
-            ArrayListStack<E> tmpArraylist = new ArrayListStack<E>(stackToAddTo);
-            E obj = tmpArraylist.peek();
-            tmpArraylist.pop();
-            ArrayListStack<E> tmpArraylist2 = new ArrayListStack<E>(tmpArraylist);
-            stackToAddTo = tmpArraylist2;
-            return obj;
-        }
-        else if(stackToAddTo.empty())
-        {
-            return null;
-        }
-        return null;
+       if(size == 0)
+       {
+           return null;
+       }
+       E item = queToAddTo.get(front);
+       front = (front+1) % initialCapacity;
+       size--;
+       return item;
     }
 
     /***************************************************************
@@ -138,26 +123,37 @@ public class CircularArrayQueue<E> implements Queue<E>
     @Override
     public E remove()
     {
-        if(!stackToAddTo.empty())
-        {
-            ArrayListStack<E> tmpArraylist = new ArrayListStack<E>(stackToAddTo);
-            E obj = tmpArraylist.peek();
-            tmpArraylist.pop();
-            ArrayListStack<E> tmpArraylist2 = new ArrayListStack<E>(tmpArraylist);
-            stackToAddTo = tmpArraylist2;
-            return obj;
-        }
-        else
+        if (size == 0)
         {
             throw new NoSuchElementException();
         }
+
+         E item = queToAddTo.get(front);
+         front = (front+1) % initialCapacity;
+         size--;
+         return item;
+    }
+
+    private void reallocate()
+    {
+        int newCapacity = initialCapacity*2;
+        ArrayList<E> newArraylist = new ArrayList<E>(newCapacity);
+        int f = front;
+        for(int i = 0; i < size; i++)
+        {
+            newArraylist.add(i, queToAddTo.get(f));
+            f = (f+1) % initialCapacity;
+        }
+        front = 0;
+        rear = size - 1;
+        initialCapacity = newCapacity;
+        queToAddTo = newArraylist;
     }
 
     @Override
     public String toString()
     {
-        ArrayListStack<E> tmpArraylist = new ArrayListStack<E>(stackToAddTo);
-        return tmpArraylist.toString();
+        return null;
     }
 
     /***************************************************************
@@ -186,18 +182,7 @@ public class CircularArrayQueue<E> implements Queue<E>
     @Override
     public boolean equals(Object o)
     {
-        if (o == this) {
-            return true;
-        }
-
-        if (!(o instanceof CircularArrayQueue))
-        {
-            return false;
-        }
-
-        CircularArrayQueue c = (CircularArrayQueue) o;
-
-        return c.stackToAddTo.equals(this.stackToAddTo) && (this.initialCapacity == c.initialCapacity);
+        return false;
     }
 
     @Override
